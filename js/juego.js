@@ -20,7 +20,22 @@ var Juego = {
   obstaculosCarretera: [
     /*Aca se van a agregar los obstaculos visibles. Tenemos una valla horizontal
     de ejemplo, pero podras agregar muchos mas. */
-    new Obstaculo('imagenes/valla_horizontal.png', 70, 430, 30, 30, 1)
+    new Obstaculo('imagenes/valla_horizontal.png', 70, 430, 30, 30, 1),
+    new Obstaculo('imagenes/valla_horizontal.png', 100, 430, 30, 30, 1),
+    new Obstaculo('imagenes/valla_horizontal.png', 130, 430, 30, 30, 1),
+    new Obstaculo('imagenes/valla_horizontal.png', 130, 100, 30, 30, 1),
+    new Obstaculo('imagenes/valla_horizontal.png', 160, 100, 30, 30, 1),
+    new Obstaculo('imagenes/valla_horizontal.png', 510, 430, 30, 30, 1),
+    new Obstaculo('imagenes/valla_vertical.png',480,480,30,30,1),
+    new Obstaculo('imagenes/valla_vertical.png',480,450,30,30,1),
+    new Obstaculo('imagenes/valla_vertical.png',180,450,30,30,1),
+    new Obstaculo('imagenes/bache.png',180,280,30,30,4),
+    new Obstaculo('imagenes/bache.png',300,480,30,30,4),
+    new Obstaculo('imagenes/bache.png',510,130,30,30,4),
+    new Obstaculo('imagenes/bache.png',810,430,30,30,4),
+    new Obstaculo('imagenes/auto_verde_abajo.png',180,230,15,30,1),
+    new Obstaculo('imagenes/auto_verde_abajo.png',860,390,15,30,1),
+    new Obstaculo('imagenes/auto_verde_derecha.png',400,470,30,15,1)
 
   ],
   /* Estos son los bordes con los que se puede chocar, por ejemplo, la vereda.
@@ -44,7 +59,14 @@ var Juego = {
   ],
   // Los enemigos se agregaran en este arreglo.
   enemigos: [
-
+    new ZombieCaminante('imagenes/zombie1.png',200,200,15,15,1,{desdeX: 200, hastaX: 961, desdeY: 20, hastaY: 557}),
+    new ZombieCaminante('imagenes/zombie2.png',200,100,15,15,1,{desdeX: 20, hastaX: 961, desdeY: 20, hastaY: 557}),
+    new ZombieCaminante('imagenes/zombie3.png',450,450,15,15,1,{desdeX: 200, hastaX: 961, desdeY: 20, hastaY: 557}),
+    new ZombieCaminante('imagenes/zombie4.png',550,850,15,15,1,{desdeX: 20, hastaX: 961, desdeY: 20, hastaY: 557}),
+    new ZombieCaminante('imagenes/zombie1.png',650,750,15,15,1,{desdeX: 20, hastaX: 961, desdeY: 20, hastaY: 557}),
+    new ZombieConductor('imagenes/tren_vertical.png', 644, 20, 30, 90, 1, {desdeY: 20, hastaY: 470}, 'vertical'),
+    //new ZombieConductor('imagenes/tren_horizontal.png', 400, 322, 90, 30, 2, {desdeX: 5, hastaX: 850}, 'horizontal),    
+    //new ZombieConductor('imagenes/tren_vertical.png', 675, 470, 30, 90, 1, {desdeY: 20, hastaY: 470}, 'vertical')
   ]
 
 }
@@ -72,7 +94,9 @@ Juego.iniciarRecursos = function() {
     'imagenes/auto_rojo_derecha.png',
     'imagenes/auto_rojo_izquierda.png',
     'imagenes/auto_verde_abajo.png',
-    'imagenes/auto_verde_derecha.png'
+    'imagenes/auto_verde_derecha.png',
+    'imagenes/Mensaje1.png',
+    'imagenes/Mensaje2.png'
   ]);
   Resources.onReady(this.comenzar.bind(Juego));
 };
@@ -88,7 +112,12 @@ Juego.comenzar = function() {
   /* El bucle principal del juego se llamara continuamente para actualizar
   los movimientos y el pintado de la pantalla. Sera el encargado de calcular los
   ataques, colisiones, etc*/
-  this.buclePrincipal();
+  this.dibujaInstrucciones();
+
+  //Tuve que setear un timeout para que muestre el primer mensaje del juego de 5 segundos
+  setTimeout(function() {
+    Juego.buclePrincipal();
+  },5000);
 };
 
 Juego.buclePrincipal = function() {
@@ -130,9 +159,19 @@ Juego.capturarMovimiento = function(tecla) {
   if (this.chequearColisiones(movX + this.jugador.x, movY + this.jugador.y)) {
     /* Aca tiene que estar la logica para mover al jugador invocando alguno
     de sus metodos  */
-
-    /* COMPLETAR */
+    
+    //Llamo al metodo moverse, para poder realizar los movimientos del jugador
+    Jugador.mover(movX,movY,tecla);
   }
+};
+
+Juego.dibujaInstrucciones = function() {
+  var mensajesInicial = ['imagenes/Mensaje1.png','imagenes/Mensaje2.png']
+  var imagenInicial;
+  if (Math.random() <= 0.5) {
+    imagenInicial = mensajesInicial[0];
+  } else {imagenInicial = mensajesInicial[1];}
+  Dibujante.dibujarImagen(imagenInicial, 0, 5, this.anchoCanvas, this.altoCanvas);
 };
 
 Juego.dibujar = function() {
@@ -145,9 +184,10 @@ Juego.dibujar = function() {
   /* Aca hay que agregar la logica para poder dibujar al jugador principal
   utilizando al dibujante y los metodos que nos brinda.
   "Dibujante dibuja al jugador" */
-
+  
   /* Completar */
-
+  Dibujante.dibujarEntidad(Jugador);
+  
   // Se recorren los obstaculos de la carretera pintandolos
   this.obstaculosCarretera.forEach(function(obstaculo) {
     Dibujante.dibujarEntidad(obstaculo);
@@ -155,7 +195,7 @@ Juego.dibujar = function() {
 
   // Se recorren los enemigos pintandolos
   this.enemigos.forEach(function(enemigo) {
-    /* Completar */
+    Dibujante.dibujarEntidad(enemigo);
   });
 
   // El dibujante dibuja las vidas del jugador
@@ -174,6 +214,9 @@ un recorrido por los enemigos para dibujarlos en pantalla ahora habra que hacer
 una funcionalidad similar pero para que se muevan.*/
 Juego.moverEnemigos = function() {
   /* COMPLETAR */
+  this.enemigos.forEach(function(enemigo){
+    enemigo.mover();
+  });
 };
 
 /* Recorre los enemigos para ver cual esta colisionando con el jugador
@@ -185,14 +228,18 @@ Juego.calcularAtaques = function() {
     if (this.intersecan(enemigo, this.jugador, this.jugador.x, this.jugador.y)) {
       /* Si el enemigo colisiona debe empezar su ataque
       COMPLETAR */
+      enemigo.comenzarAtaque(this.jugador);
     } else {
       /* Sino, debe dejar de atacar
       COMPLETAR */
+      enemigo.dejarDeAtacar(this.jugador);
     }
   }, this);
 };
 
-
+Juego.dibujaInstrucciones = function() {
+  Dibujante.dibujarImagen("imagenes/Mensaje1.png", 0, 5, this.anchoCanvas, this.altoCanvas);
+};
 
 /* Aca se chequea si el jugador se peude mover a la posicion destino.
  Es decir, que no haya obstaculos que se interpongan. De ser asi, no podra moverse */
@@ -200,8 +247,9 @@ Juego.chequearColisiones = function(x, y) {
   var puedeMoverse = true
   this.obstaculos().forEach(function(obstaculo) {
     if (this.intersecan(obstaculo, this.jugador, x, y)) {
-
+     
       /*COMPLETAR, obstaculo debe chocar al jugador*/
+      obstaculo.chocar(this.jugador);
 
       puedeMoverse = false
     }
