@@ -20,22 +20,20 @@ ZombieConductor.prototype.constructor = ZombieConductor;
 ZombieConductor.prototype.mover = function() {
 
   //Validamos si el tren va horizonatal o vertical
-  if (this.direccion == "horizontal") {
-    this.x += this.velocidad;
-
-    if (this.x < this.rangoMov.desdeX || this.x > this.rangoMov.hastaX){
-      this.velocidad *= -1;
+  if(this.direccion === 'vertical'){
+    this.y+=6;
+    if(this.y >= 577){
+    this.y = 0;
     }
-  }else{
-    this.y += this.velocidad;
-    
-    if (this.y < this.rangoMov.desdeY || this.y > this.rangoMov.hastaY){
-      this.velocidad *= -1;
-    }
-    
-  ZombieConductor.prototype.atacar = funcion(jugador) 
-      jugador.perderVidas(50);
-    
   }
-  
+  if(this.direccion === 'horizontal'){
+    this.x+=10;
+    if(this.x >= 961){
+      this.x = 0;
+    }
+  }
+}
+
+ZombieConductor.prototype.atacar = function(jugador){
+  jugador.perderVidas(5);
 }

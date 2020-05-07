@@ -64,9 +64,9 @@ var Juego = {
     new ZombieCaminante('imagenes/zombie3.png',450,450,15,15,1,{desdeX: 200, hastaX: 961, desdeY: 20, hastaY: 557}),
     new ZombieCaminante('imagenes/zombie4.png',550,850,15,15,1,{desdeX: 20, hastaX: 961, desdeY: 20, hastaY: 557}),
     new ZombieCaminante('imagenes/zombie1.png',650,750,15,15,1,{desdeX: 20, hastaX: 961, desdeY: 20, hastaY: 557}),
-    new ZombieConductor('imagenes/tren_vertical.png', 644, 20, 30, 90, 1, {desdeY: 20, hastaY: 470}, 'vertical'),
-    //new ZombieConductor('imagenes/tren_horizontal.png', 400, 322, 90, 30, 2, {desdeX: 5, hastaX: 850}, 'horizontal),    
-    //new ZombieConductor('imagenes/tren_vertical.png', 675, 470, 30, 90, 1, {desdeY: 20, hastaY: 470}, 'vertical')
+    new ZombieConductor('imagenes/tren_horizontal.png', 250, 322, 90, 30, 10, 15, 'horizontal'),
+    new ZombieConductor('imagenes/tren_vertical.png',644,455,30,90,10,15,'vertical'),
+    new ZombieConductor('imagenes/tren_vertical.png',678,0,30,90,10,15,'vertical'),
   ]
 
 }
@@ -180,6 +180,7 @@ Juego.dibujar = function() {
   //Se pinta la imagen de fondo segun el estado del juego
   this.dibujarFondo();
 
+  if (this.terminoJuego() || this.ganoJuego()) return;
 
   /* Aca hay que agregar la logica para poder dibujar al jugador principal
   utilizando al dibujante y los metodos que nos brinda.
@@ -250,7 +251,6 @@ Juego.chequearColisiones = function(x, y) {
      
       /*COMPLETAR, obstaculo debe chocar al jugador*/
       obstaculo.chocar(this.jugador);
-
       puedeMoverse = false
     }
   }, this)
